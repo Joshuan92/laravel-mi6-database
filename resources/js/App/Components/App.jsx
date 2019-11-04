@@ -12,18 +12,50 @@ export default class App extends React.Component {
         }
     }
 
+    getToken = () => {
+        return window.localStorage.getItem('_token');
+    }
+
+    setToken = (token) => {
+        window.localStorage.setItem('_token', token);
+    }
+
     componentDidMount = () => {
 
+        if(null === this.getToken()) {
+            this.setState({
+                logged_in: false
+            })
+        }
+        else{
+            this.setState({
+                logged_in: true
+            })
+
+        }
+    }
+
+    onLoginSuccess = (token) => {
+        this.setToken(token);
+
+        this.setState({
+            logged_in: true,
+            token: token
+        })
     }
 
     render() {
+
+        console.log(this.state.logged_in);
+        
 
         let content = 'Loading...';
         if (this.state.logged_in !== null) {
             if (this.state.logged_in) {
                 content = <PersonList />;
             } else {
-                content = <LoginForm />;
+                content = <LoginForm 
+                onLoginSuccess = {this.onLoginSuccess} />;
             }
         }
 
